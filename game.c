@@ -36,25 +36,25 @@ void printArray(int board[]) {
 void displayBoard(int board[]) {
     printf("\n");
     printf("              COMPUTER                \n");
-    printf("--------------------------------------\n");
-    printf(" | CS | C7 | C5 | C4 | C3 | C2 | C1 |\n");
-    printf("--------------------------------------\n");
+    printf(" ------------------------------------\n");
+    printf(" | CS | C6 | C5 | C4 | C3 | C2 | C1 |\n");
+    printf(" ------------------------------------\n");
     printf(" | ");
     printf("%d  | ", board[COMP_STORE]);
     for(int i = COMP_PITS - 1; i >= 0; i--) {
         printf("%d  | ", board[i + 7]);
     }
     printf("\n");
-    printf("--------------------------------------\n\n");
-    printf("--------------------------------------\n");
-    printf(" | U1 | U2 | U3 | U4 | U5 | U6 | US |\n");
-    printf("--------------------------------------\n");
-    printf(" | ");
+    printf(" ------------------------------------ \n\n");
+    printf("      ------------------------------------\n");
+    printf("      | U1 | U2 | U3 | U4 | U5 | U6 | US |\n");
+    printf("      ------------------------------------\n");
+    printf("      | ");
     for(int i = 0; i < COMP_PITS + 1; i++) {
         printf("%d  | ", board[i]);
     }
-    printf("\n--------------------------------------\n");
-    printf("                USER                \n");
+    printf("\n      ------------------------------------ \n");
+    printf("                      USER                \n");
 
 }
 
@@ -103,6 +103,9 @@ int userMove(int board[]) {
             board[position] = 0;
             board[opposite] = 0;
             printf("Captured! You took %d stones from pit %d.\n", captured, opposite);
+            printf("Press Enter to continue...");
+            getchar(); // consume leftover newline
+            getchar(); // wait for Enter
         }
     }
 
@@ -122,6 +125,9 @@ int compMove(int board[]) {
 
     if(pit == -1) {
         printf("Computer has no moves!\n");
+        printf("Press Enter to continue...");
+        getchar(); // consume leftover newline
+        getchar(); // wait for Enter
         return 0;
     }
 
@@ -139,6 +145,9 @@ int compMove(int board[]) {
     // extra turn if last stone in computer's store
     if(position == 13) {
         printf("Computer gets another turn!\n");
+        printf("Press Enter to continue...");
+        getchar(); // consume leftover newline
+        getchar(); // wait for Enter
         return 1;
     }
 
@@ -151,6 +160,9 @@ int compMove(int board[]) {
             board[position] = 0;
             board[opposite] = 0;
             printf("Computer captured %d stones from pit %d!\n", captured, opposite);
+            printf("Press Enter to continue...");
+            getchar(); // consume leftover newline
+            getchar(); // wait for Enter
         }
     }
 
@@ -186,15 +198,63 @@ int main() {
     // printArray(board);
     // displayBoard(board);
 
-    while(1) {
-        int again = userMove(board);
-        system("cls");
-        displayBoard(board);
-        if(!again) {
-            break;   // stop after one move testing
-        } else {
-            printf("Last stone in your store! You get another turn.\n");
-        }
+    // while(1) {
+    //     int again = userMove(board);
+    //     system("cls");
+    //     displayBoard(board);
+    //     if(!again) {
+    //         break;   // stop after one move testing
+    //     } else {
+    //         printf("Last stone in your store! You get another turn.\n");
+    //     }
+    // }
+
+
+    while(!isGameOver(board)) {
+        int again;
+
+        // User Move
+        do {
+            again = userMove(board);
+            system("cls");
+            displayBoard(board);
+            if(again) {
+                printf("Last stone in your store! You get another turn.\n");
+            }
+        } while(again && !isGameOver(board));
+
+        // Computer Move
+        do {
+            again = compMove(board);
+            system("cls");
+            displayBoard(board);
+            if(again) {
+                printf("Computer gets another turn!\n");
+            }
+        } while(again && !isGameOver(board));
     }
+
+    // Game Ends: collect all stones
+    for(int i = 0; i < 6; i++) {
+        board[6] += board[i];
+        board[i] = 0;
+    }
+    for(int i = 7; i < 13; i++) {
+        board[13] += board[i];
+        board[i] = 0;
+    }
+
+    system("cls");
+    displayBoard(board);
+
+    printf("\nGame Over!\n");
+    if(board[6] > board[13]) {
+        printf("Congratulations! You win.\n\n");
+    } else if(board[6] < board[13]) {
+        printf("Better luck next time! Computer wins.\n\n");
+    } else {
+        printf("It's a tie!\n\n");
+    }
+
     return 0;
 }
