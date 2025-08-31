@@ -32,9 +32,34 @@ void printArray(int board[]) {
     }
 }
 
+void displayBoard(int board[]) {
+    printf("\n");
+    printf("              COMPUTER                \n");
+    printf("--------------------------------------\n");
+    printf(" | C6 | C5 | C4 | C3 | C2 | C1 | CS |\n");
+    printf("--------------------------------------\n");
+    printf(" | ");
+    for(int i = 0; i < COMP_PITS + 1; i++) {
+        printf("%d  | ", board[i + 7]);
+    }
+    printf("\n");
+    printf("--------------------------------------\n\n");
+    printf("--------------------------------------\n");
+    printf(" | U1 | U2 | U3 | U4 | U5 | U6 | US |\n");
+    printf("--------------------------------------\n");
+    printf(" | ");
+    for(int i = 0; i < COMP_PITS + 1; i++) {
+        printf("%d  | ", board[i]);
+    }
+    printf("\n--------------------------------------\n");
+    printf("                USER                \n");
+
+}
+
 int main() {
     int board[TOTAL];
     initBoard(board);
-    printArray(board);
+    // printArray(board);
+    displayBoard(board);
     return 0;
 }
